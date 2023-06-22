@@ -102,8 +102,77 @@ CMD [ "--argument" ]
 
 - `docker run --rm alpine uname -a`
 
+## Docker Run with Entrypoint
+1. `docker run --entrypoint sh --rm alpine -c 'touch /tmp/file && chown 1001:1001 /tmp/file && echo "File permission changed."'` 
+
+   This command runs a Docker container from the alpine image, creates a file in the /tmp directory, changes the file's owner to user 1001, and then prints "File permission changed".
+
+2. `docker run --entrypoint sh --cap-drop CAP_CHOWN --rm alpine -c 'touch /tmp/file && chown 1001:1001 /tmp/file && echo "File permission changed."'`
+
+   This command is similar to the previous one but it also drops the `CAP_CHOWN` capability which prevents the container from changing ownership of files.
+
+3. `docker run --entrypoint sh --cap-drop CAP_CHOWN --cap-add CHOWN --rm alpine -c 'touch /tmp/file && chown 1001:1001 /tmp/file && echo "File permission changed."'`
+
+   This command drops the `CAP_CHOWN` capability and then adds it back. This will allow the container to change file ownership again.
+
+4. `docker run --entrypoint sh --cap-drop CAP_CHOWN --cap-add CHOWN --cap-add LEASE --cap-drop NET_ADMIN --rm alpine -c 'touch /tmp/file && chown 1001:1001 /tmp/file && echo "File permission changed."'`
+
+   This command adds a few more capabilities and drops `NET_ADMIN`. It illustrates how to add and drop multiple capabilities.
+
+5. `docker run --entrypoint sh --cap-add CHOWN --cap-drop ALL --rm alpine -c 'touch /tmp/file && chown 1001:1001 /tmp/file && echo "File permission changed."'`
+
+   This command adds the `CHOWN` capability but drops all other capabilities. This restricts what the container can do to only changing file ownership.
 
 
+## Docker Build and Run with Stress Testing
+1. `docker build -t stress .` 
+
+   This command builds a Docker image using the Dockerfile in the current directory and tags it as `stress`.
+
+2. `docker run --rm stress --cpu 4 --timeout 5`
+
+   This command runs a Docker container from the `stress` image, limits the container to use 4 CPUs, and sets a timeout of 5 seconds.
+
+3. `docker run --rm --cpus 1.6 stress --cpu 4 --timeout 5`
+
+   This command runs a Docker container from the `stress` image, limits the container to use 1.6 CPUs, and sets a timeout of 5 seconds.
+
+4. `docker run --rm --cpu-period 100000 --cpu-quota 160000 stress --cpu 4 --timeout 5`
+
+   This command runs a Docker container from the `stress` image, sets the CPU period to 100000 and the CPU quota to 160000. This means the container can use 1.6 CPUs.
+
+5. `docker run --rm stress --vm 1 --vm-bytes 3.99G --timeout 5`
+
+   This command runs a Docker container from the `stress` image and creates a VM inside the container with 1 CPU and 3.99GB of memory. It then sets a timeout of 5 seconds.
+
+## Docker RUN with Logging
+1. `docker run --name test-container my-image`
+
+   This command runs a Docker container named `test-container` from the `my-image` image.
+
+2. `docker logs test-container`
+
+   This command displays the logs from the `test-container`.
+
+3. `docker ps -a`
+
+   This command lists all Docker containers, both running and stopped.
+
+4. `docker inspect test-container --format '{{.ID}}'`
+
+   This command retrieves the ID of `test-container`.
+
+5. `sudo ls /var/lib/docker/containers/<container-id>`
+
+   This command lists the contents of the directory associated with the specific container ID.
+
+6. `docker run --name test-container-2 --log-driver none my-image`
+
+   This command runs a Docker container named `test-container-2` from the `my-image` image and sets the logging driver to none, disabling logging for this container.
+
+7. `docker inspect test-container-2 --format '{{.ID}}'`
+
+   This command retrieves the ID of `test-container-2`.
 
 ## LABEL
 
@@ -151,5 +220,42 @@ After running this command, you should be able to run docker run --rm --platform
 
 - `docker run --rm my-image:latest-arm`
 
+
+
+# Useful Docker Daemon Options
+# Docker Daemon
+
+The Docker daemon, also known as `dockerd`, is a persistent background process that manages Docker containers and handles container objects on a host system. The daemon listens for Docker API requests and manages Docker objects such as images, containers, networks, and volumes. The Docker daemon can also communicate with other Docker daemons to manage Docker services.
+
+It's important to note that the user does not interact directly with the daemon, but instead through the Docker client. When you run Docker commands such as `docker run` or `docker build`, the client sends these commands to `dockerd`, which carries them out. 
+
+Below are some useful Docker daemon options:
+### `--config`
+This option allows you to specify the location of the Docker configuration files. 
+Example: `dockerd --config /etc/docker`
+
+### `--data-root`
+This option allows you to set the Docker root directory, which is where all Docker data is stored (images, containers, etc).
+Example: `dockerd --data-root /var/lib/docker_custom`
+
+### `--debug`
+This option allows you to enable debug mode, which provides more detailed logs for debugging purposes.
+Example: `dockerd --debug`
+
+### `--default-runtime`
+This option allows you to set the default runtime Docker will use.
+Example: `dockerd --default-runtime runc`
+
+### `--log-level`
+This option allows you to set the logging level. Possible values are `debug`, `info`, `warn`, `error`, `fatal`.
+Example: `dockerd --log-level error`
+
+### `--insecure-registry`
+This option allows you to enable insecure registry communication, i.e., Docker does not perform SSL verification when pulling from or pushing to these registries.
+Example: `dockerd --insecure-registry myregistrydomain.com:5000`
+
+### `--add-runtime`
+This option allows you to add a new runtime to Docker.
+Example: `dockerd --add-runtime custom=/usr/bin/custom_runtime`
 
    
