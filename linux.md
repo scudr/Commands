@@ -19,3 +19,7 @@ To start typing, switch to Insert Mode by pressing *i* and *ESC* to go back to N
 - *ESC* & *:Wq* to save and quit 
 
 to search on vim */*  and delete the searched word *dw*
+
+
+**sudo -i** 
+It is used to open a new shell as the root user (or as another user specified), with that user's environment variables.
