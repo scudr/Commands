@@ -258,4 +258,46 @@ Example: `dockerd --insecure-registry myregistrydomain.com:5000`
 This option allows you to add a new runtime to Docker.
 Example: `dockerd --add-runtime custom=/usr/bin/custom_runtime`
 
-   
+
+# Docker Commands: Deep Dive
+
+This document provides an overview of various Docker commands, including how to run Docker within Docker, interact with the Docker API, install Docker, list Docker containers, and more.
+
+```bash
+# Docker within Docker
+# The following command allows us to run Docker commands within a Docker container. 
+# It starts a new container from 'my-image', mounts the Docker socket from the host to the container, 
+# starts the container with bash shell, and provides an interactive terminal. 
+# The '--rm' option removes the container after it exits.
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock --entrypoint bash -i -t my-image
+
+# Curl with Docker Socket
+# This command sends an HTTP request through the Docker socket to the Docker API. 
+# It sends a request to the Docker API to list all containers via the Docker socket.
+curl --unix-socket /var/run/docker.sock http://anything/containers/json
+
+# Docker Installation
+# This command fetches and executes the Docker installation script.
+curl -L get.docker.io | bash
+
+# Listing Docker Containers
+# This command lists all running Docker containers.
+docker ps
+
+# Docker Run with --rm
+# This command starts a new Docker container and removes it after exit.
+docker run --rm my-image
+
+# Docker Run with Mounted File
+# This command starts a new Docker container from 'alpine' image with '/app/include/header.txt' from the host 
+# mounted to '/header.txt' inside the container.
+docker run --rm -it -v /app/include/header.txt:/header.txt alpine
+
+# Docker Volume Create
+# This command creates a new Docker volume named 'temp'.
+docker volume create temp
+
+# Docker Container with Mounted Volume
+# This command creates a new Docker container from 'alpine' image with 'temp' volume from the host 
+# mounted to '/tmp' inside the container.
+docker container create -v temp:/tmp alpine
