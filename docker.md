@@ -301,3 +301,54 @@ docker volume create temp
 # This command creates a new Docker container from 'alpine' image with 'temp' volume from the host 
 # mounted to '/tmp' inside the container.
 docker container create -v temp:/tmp alpine
+```
+
+```bash
+# Inspecting a Docker Network
+docker network inspect network-a
+
+# Creating a Container and Connecting to a Network
+docker container create -it --name container-c --entrypoint sh --net network-a curlimages/curl
+
+# Stopping a Container
+docker container stop container-c
+
+# Connecting a Container to a Different Network
+docker network connect network-b container-c
+
+# Starting a Container
+docker container start container-c
+
+# Attaching to a Container
+docker container attach container-c
+```
+
+
+
+```bash
+docker network inspect network-a
+
+docker container create -it --name container-c --entrypoint sh --net network-a curlimages/curl
+
+docker container stop container-c
+
+docker network connect network-b container-c
+
+docker container start container-c
+
+docker container attach container-c
+```
+
+## Macvlan
+
+The `macvlan` network driver allows containers to have their own unique MAC addresses assigned from the underlying network, enabling them to appear as separate physical devices on the network. This provides direct network access for containers.
+
+## IPvlan
+
+The `ipvlan` network driver is similar to `macvlan`, but it allows containers to have their own unique IP addresses on the network. It provides direct network access while maintaining the ability to isolate traffic between containers.
+
+## Overlay Network
+
+The overlay network driver enables multi-host communication and network connectivity for Docker services or swarm services. It allows containers running on different Docker hosts to communicate with each other securely.
+
+Standard examples and usage of these networking modes can be found in the Docker documentation.
