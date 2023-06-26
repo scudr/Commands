@@ -352,3 +352,58 @@ The `ipvlan` network driver is similar to `macvlan`, but it allows containers to
 The overlay network driver enables multi-host communication and network connectivity for Docker services or swarm services. It allows containers running on different Docker hosts to communicate with each other securely.
 
 Standard examples and usage of these networking modes can be found in the Docker documentation.
+
+## Run Docker Container with Volume
+
+```bash
+docker run -i -t --rm --mount 'type=volume,source=super-super-important,destination=/super-important' alpine
+```
+This command runs an Alpine-based Docker container, and mounts the 'super-super-important' volume to the '/super-important' path inside the container.
+
+## Run Docker Container and Write Data
+
+```bash
+docker run --rm -v /tmp/lima/stuff:/stuff alpine sh -c 'echo "This is file number 10" > /stuff/file-10'
+```
+This command runs an Alpine Docker container, maps the '/tmp/lima/stuff' directory from the host into the '/stuff' directory in the container, and writes "This is file number 10" to the file '/stuff/file-10'.
+
+## Create Backup from Docker Volume
+```bash
+docker run --rm -v $PWD:/target -v super-super-important:/backup alpine tar cvzf /target/backup.tar -C /backup .
+```
+This command runs a Docker container and maps the current directory from the host into the '/target' directory in the container and the 'super-super-important' volume to '/backup'. Then it uses the 'tar' command to create a gzip compressed tarball of the '/backup' directory, storing the tarball in the '/target' directory.
+
+## List Contents of Tar File
+```bash
+tar -tf backup.tar
+```
+This command extracts the backup.tar file from the host's current directory ('/target') to the new Docker volume ('super-super-important-restore') mounted at '/restore' in the container.
+
+## Create Large Random File
+```bash
+time docker run --rm -v /tmp/lima/stuff:/app alpine dd if=/dev/urandom of=/app/stuff.txt bs=1G count=1
+```
+This command creates a 1 GB file filled with random data at '/tmp/lima/stuff/stuff.txt' on the host. The 'time' command is used to measure how long the operation takes.
+
+## Run Docker Registry
+
+```bash
+docker run --rm --name registry -p 5000:5000 -d registry:2
+```
+This command starts a new Docker registry container which listens on port 5000.
+
+## Push Docker Image to Registry
+```bash
+docker push localhost:5000/my-image:latest
+```
+This command pushes the 'my-image:latest' image to the local Docker registry.
+## Remove Docker Image from Local Cache
+```bash
+docker rmi localhost:5000/my-image
+docker rmi my-image -f
+```
+These commands remove 'my-image' from the local Docker image cache. The '-f' flag is used to force the removal if the image is being used by a stopped container or has other tags.
+
+## Run Docker Image from Registry
+docker run --rm localhost:5000/my-image
+
