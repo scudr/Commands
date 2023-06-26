@@ -101,3 +101,66 @@ In this document, we will cover essential MongoDB commands with brief explanatio
 
 6. `console.table(results)`
     -Print the table *results*
+
+## MongoDB Command Explanation
+
+#### 1. List Indexes
+```javascript
+db.recipes.getIndexes()
+```
+
+## Drop Index
+```javascript
+db.recipes.dropIndex("cook_time_-1")
+```
+This command removes the 'cook_time_-1' index from the 'recipes' collection.
+
+##  Explain Query Execution Stats
+```javascript
+db.recipes.find({ "cook_time": 10 }, { "title": 1 }).explain("executionStats")
+```
+This command runs a find operation on the 'recipes' collection to fetch documents where 'cook_time' is 10, returning only the 'title' field. The '.explain("executionStats")' provides statistics about the execution of the operation.
+
+## Create Capped Collection
+```javascript
+db.createCollection("error_log",{capped:true,size:10000, max:10000});
+
+```
+This command creates a new capped collection named 'error_log'. A capped collection is a fixed-size collection that automatically overwrites its oldest entries when it reaches its maximum size. In this case, the size and the max number of documents are set to 10000.
+
+## List Files in MongoDB
+```bash
+mongofiles list --db=files --quiet
+```
+This command lists all files stored in the MongoDB 'files' database, using the GridFS storage specification. The '--quiet' option suppresses the output of the underlying mongo shell that 'mongofiles' runs.
+
+## Upload Files to MongoDB
+```bash
+mongofiles put .\apple-pie.jpg --db=files
+mongofiles put ozma.pdf --db=files
+```
+These commands upload the files 'apple-pie.jpg' and 'ozma.pdf' to the 'files' database in MongoDB, using GridFS.
+
+## Delete File from MongoDB
+```bash
+mongofiles delete ozma.pdf --db=files
+
+```
+This command deletes the 'ozma.pdf' file from the 'files' database in MongoDB.
+
+##  Download File from MongoDB
+
+```bash
+mongofiles get apple-pie.jpg --db=files
+```
+This command downloads the 'apple-pie.jpg' file from the 'files' database in MongoDB.
+
+
+## Start MongoDB with Replication
+```bash
+mongod --replSet cookingSet --dbpath=/store/data/rs2 --port 27018 --oplogSize 200
+
+```
+This command starts the MongoDB daemon with a replication set named 'cookingSet'. The database files are stored at '/store/data/rs2', the daemon listens on port 27018, and the operation log size is set to 200 MB.
+
+
