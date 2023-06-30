@@ -184,3 +184,93 @@ start-yarn.sh
 ```
 
 You can access the web interface for Hadoop by going to *http://localhost:9870/* for the HDFS overview and *http://localhost:8088/* for the YARN overview. 
+
+## Core Libraries
+### Hive
+SQL-like query, create batch (MapReduce) jobs
+### Pig
+ELT-like scripting language, data manipulationg, trimming, etc
+
+## IMPALA
+Sql-like query, interactive process
+
+## Other libraries
+## Mahout
+Machine learning algoritms, clusterings, time series, etc.
+## Spark
+    Resilient distributed data sets
+## Storm
+Complex event processing
+
+## MapReduce programming languages
+### JAVA
+### PYTHON
+### R
+
+hadoop fs -mkdir demo-hadoop 
+hadoop fs -mkdir -p demo-hadoop-3
+
+hadoop fs -put /home/carscudr/shakespeare.raw ./demo-hadoop/shakespeare.raw
+hadoop fs -cat demo-hadoop-3/shakespeare.raw | tail -n50
+
+
+
+wget https://raw.githubusercontent.com/pic-es/BigDataMOOC/master/scripts/setup_pyspark.sh
+# download anaconda
+. setup_pyspark.sh
+hdfs dfsadmin -report
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar teragen 1000 /user/hadoop/terainput
+
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar teragen 1000 /user/hadoop/terainput
+
+
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar terasort /user/hadoop/terainput /user/hadoop/teraoutput
+
+hdfs dfs -ls /user/hadoop/teraoutput
+
+hdfs dfs -rm -r -skipTrash /user/hadoop/tera*
+
+hdfs dfs -cat /user/hadoop/HDFS/output/part-r-00000 | grep "vaca"
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar wordcount /user/hadoop/HDFS/  /user/hadoop/HDFS/output
+
+
+mysql -u root -p
+use retail_db
+select * from categories;
+
+
+```bash
+# FROM RELATIONAL DATABASE TO HDFS
+
+# This command lists the contents of the 'austin' directory in HDFS.
+hdfs dfs -ls austin
+
+# This command displays the content of the 'part-m-00000' file in the 'austin' directory.
+hdfs dfs -cat austin/part-m-00000
+
+# This command selects all records from the 'customers' table where 'customer_city' is 'Austin' in the MySQL database.
+mysql> select * from customers where customer_city="Austin";
+
+# This command imports data from the 'customers' table in the MySQL database to the 'austin' directory in HDFS.
+sqoop import --connect jdbc:mysql://localhost/retail_db --username root --P --table customers -m 1 --target-dir austin --where "customer_city='Austin'"
+
+# This command imports data from the 'categories' table in the MySQL database to the 'sqoop' directory in HDFS.
+sqoop import --connect jdbc:mysql://localhost/retail_db --username root --P --table categories --target-dir sqoop
+
+# This command lists the contents of the 'sqoop' directory in HDFS.
+hdfs dfs -ls sqoop
+
+# This command displays the content of the 'part-m-00000' file in the 'sqoop' directory.
+hdfs dfs -cat sqoop/part-m-00000
+
+
+# FROM HDFS TO RELATIONAL DATABASE
+
+# This SQL command creates a new table called 'temp' in the MySQL database.
+CREATE TABLE temp(id INT NOT NULL PRIMARY KEY, cat INT, name VARCHAR(30));
+
+# This command exports data from the 'sqoop' directory in HDFS to the 'temp' table in the MySQL database.
+sqoop export --connect jdbc:mysql://localhost/retail_db --username root -P --table temp --export-dir sqoop
+
+# This command selects all records from the 'temp' table in the MySQL database.
+select * from temp;
