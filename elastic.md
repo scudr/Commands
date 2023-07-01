@@ -11,3 +11,23 @@
         ```
         bin\elasticsearch-reset-password.bat -u elastic
         ```
+
+## Elasticsearch Commands
+
+- **Cluster Health:**
+    - To get the health status of your cluster, use the following GET request:
+        ```
+        GET /_cluster/health
+        ```
+
+- **Node Information:**
+    - To view information about nodes in your cluster, use the following GET request:
+        ```
+        GET /_cat/nodes?v
+        ```
+
+- **Indices Information:**
+    - To view all indices in your cluster, including those from wildcards, use the following GET request:
+        ```
+        GET /_cat/indices?v&expand_wildcards=all
+        ```
