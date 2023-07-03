@@ -1,3 +1,23 @@
+# Pyspark
+## Answers to the Questionaire 2 from the Course Big Data: Processing and Analytics on Coursera
+```python
+grouped_by_dest = bd.groupBy("Dest")
+counted_by_dest =grouped_by_dest.count()
+sorted_by_dest =counted_by_dest.sort('count',ascending=False)
+top_three_airports = sorted_by_dest.limit(3)
+top_three_airports.show()
+```
+```python
+from pyspark.sql import functions as F
+grouped_data = bd.groupBy('DEST')
+average_delays = grouped_data.agg(F.avg('ARR_DELAY').alias('average_delay'))
+sorted_data = average_delays.sort('average_delay', ascending=False)
+top_three_airports = sorted_data.limit(3)
+
+top_three_airports.show()
+```
+
+
 Sharding is a type of database partitioning that separates very large databases into smaller, faster, more manageable pieces called shards. Each shard is held on a separate database server instance to spread the load and to decrease the response time.
 
 Sharding is often used in large, high-traffic applications where there's a significant amount of data to be managed, and is especially common in NoSQL databases like MongoDB.
@@ -24,3 +44,5 @@ python -m venv TF2env
 windows
 TF2env\Scripts\activate
 pip install tensorflow==2.8.0
+
+
