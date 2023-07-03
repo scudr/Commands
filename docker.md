@@ -407,3 +407,93 @@ These commands remove 'my-image' from the local Docker image cache. The '-f' fla
 ## Run Docker Image from Registry
 docker run --rm localhost:5000/my-image
 
+```bash
+docker run -d -p 8800:80 httpd
+docker run -d -p 8801:80 httpd
+-d: detach run in the background
+80 apache is listening in this port
+httpd: apache daemon
+
+curl localhost:8800
+
+
+
+ docker build -t first-container .
+
+ docker image ls
+```
+# Steps for downloading the APP to my AWS CLOUD 9 - Video "WORKING WITH CONTAINERS 101"
+
+## Pull the Docker image
+```bash 
+docker pull russau/first-container
+```
+## start a container 
+```bash
+docker run -d --name my-container russau/first-container
+```
+## Get a shell inside my running container
+```bash
+docker exec -it my-container sh  or docker exec -it my-container bash
+```
+
+# Copy a directory in my container to an specific dir in my host 
+```bash
+ docker cp my-container:/app /home/ec2-user/environment/first-container/
+ ```
+```bash
+docker build -t first-container .
+```
+#  docker run -d -p 8080:8080 first-container                                                                                                                                                    
+
+```bash 
+docker ps
+CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+91a1502eeca9   first-container          "docker-entrypoint.s…"   3 minutes ago    Up 3 minutes    0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   quizzical_clarke
+```
+## launch a shell inside this container
+```bash
+ docker exec -it 91 sh, where 91 is the container ID, see line before. 
+```
+-it iterative , i uses stdin and t terminal
+
+ps -a  to see the processes running on my container
+```bash
+ docker stop 91
+
+ docker rm 91
+```
+ to pass an environment variable to my containerized app docker run -e MESSAGE_COLOR=#0000ff -p 8080:8080 first-container
+
+
+ # Make my host file system available inside my container by using bind mount 
+```bash
+docker run -v ~/input.txt:/app/input.txt -p 80:8080 first-container
+```
+```dockerfile
+FROM node:gallium-alpine3.14
+WORKDIR /app
+ENV NODE_ENV=production
+
+
+#copy application files
+COPY app .
+RUN npm install
+
+CMD node server.js
+EXPOSE 8080
+```
+
+1. `FROM node:gallium-alpine3.14`: This line is telling Docker to use the `node:gallium-alpine3.14` image as the base for the new image you're building. This is a Node.js image built on the Alpine Linux 3.14 distribution with Node.js version "gallium" (which is a codename for a specific Node.js version).
+
+2. `WORKDIR /app`: This sets the working directory in the Docker container to `/app`. This means that any subsequent commands that run as part of the build process will be run in this directory.
+
+3. `ENV NODE_ENV=production`: This sets an environment variable in the Docker image. In this case, it's setting `NODE_ENV` to `production`, which is a common practice in Node.js applications to indicate that the application should run in production mode.
+
+4. `COPY app .`: This is copying the local `app` directory (on your machine, where you're running the `docker build` command) into the Docker image. The `.` refers to the current location in the Docker image, which is `/app` as set by the `WORKDIR` command.
+
+5. `RUN npm install`: This command is running `npm install` in the Docker image as it's being built. This installs the dependencies defined in the `package.json` file that was copied into the image with the `app` directory.
+
+6. `CMD node server.js`: This sets the default command to be run when a container is started from the image. In this case, it's running the Node.js application by calling `node server.js`. This assumes there's a `server.js` file in the `/app` directory.
+
+7. `EXPOSE 8080`: This tells Docker that the container will be listening on port 8080 when it's run. This doesn't actually publish the port; it's more like documentation to tell the user that the application inside the container will be using this port.
